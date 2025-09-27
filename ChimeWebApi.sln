@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36301.6 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChimeWebApi", "ChimeWebApi.csproj", "{57DD8DD3-FD6B-40F5-857A-2A6489346348}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{57DD8DD3-FD6B-40F5-857A-2A6489346348}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57DD8DD3-FD6B-40F5-857A-2A6489346348}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57DD8DD3-FD6B-40F5-857A-2A6489346348}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57DD8DD3-FD6B-40F5-857A-2A6489346348}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ADD7E9C0-A63C-485C-A245-B1845BEDB220}
+	EndGlobalSection
+EndGlobal
