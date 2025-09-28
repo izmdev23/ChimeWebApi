@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ChimeWebApi.Migrations
+namespace ChimeWebApi.Migrations.FileDatabaseMigrations
 {
-    [DbContext(typeof(ChimeDatabase))]
-    [Migration("20250926070931_AddRefreshToken")]
-    partial class AddRefreshToken
+    [DbContext(typeof(FileDatabase))]
+    [Migration("20250928092451_AddFileDb")]
+    partial class AddFileDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,37 +25,22 @@ namespace ChimeWebApi.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("ChimeWebApi.Entities.AppUser", b =>
+            modelBuilder.Entity("ChimeWebApi.Entities.ProductImage", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<string>("PasswordHash")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("RefreshToken")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("RefreshTokenExpireDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserName")
-                        .IsUnique();
-
-                    b.ToTable("AppUsers");
+                    b.ToTable("Images");
                 });
 #pragma warning restore 612, 618
         }

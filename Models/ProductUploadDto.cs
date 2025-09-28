@@ -1,16 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace ChimeWebApi.Models
+﻿namespace ChimeWebApi.Models
 {
-	public class ProductDto
+	public class ProductUploadDto
 	{
-		public Guid Id { get; set; }
 		public string Name { get; set; } = string.Empty;
 		public string Description { get; set; } = string.Empty;
 		public decimal Price { get; set; } = -1;
 		public int ProductTypeId { get; set; } = -1;
-		public Guid AppUserId { get; set; } = Guid.Empty;
+		public Guid UploaderId { get; set; } = Guid.Empty;
 		public decimal SalePrice { get; set; } = -1;
-		public string ProductCategoryName { get; set; } = string.Empty;
+		public required ICollection<IFormFile> Images;
 	}
 }

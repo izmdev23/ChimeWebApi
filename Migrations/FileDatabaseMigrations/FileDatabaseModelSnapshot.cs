@@ -4,19 +4,16 @@ using ChimeWebApi.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ChimeWebApi.Migrations
+namespace ChimeWebApi.Migrations.FileDatabaseMigrations
 {
-    [DbContext(typeof(ChimeDatabase))]
-    [Migration("20250926052302_InitDatabase")]
-    partial class InitDatabase
+    [DbContext(typeof(FileDatabase))]
+    partial class FileDatabaseModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,23 +22,22 @@ namespace ChimeWebApi.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("ChimeWebApi.Entities.AppUser", b =>
+            modelBuilder.Entity("ChimeWebApi.Entities.ProductImage", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<string>("PasswordHash")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppUsers");
+                    b.ToTable("Images");
                 });
 #pragma warning restore 612, 618
         }
