@@ -1,4 +1,5 @@
 ﻿using ChimeWebApi.Core.Enums;
+using ChimeWebApi.Core.Objects;
 using ChimeWebApi.Core.Services;
 using ChimeWebApi.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -37,22 +38,25 @@ namespace ChimeWebApi.Controllers
 		//	return Ok(products);
 		//}
 
-		//[HttpGet(nameof(GetProductTypes))]
-		//public async Task<IActionResult> GetProductTypes()
-		//{
-		//	var res = await _ProductService.GetProductTypes();
-		//	return Ok(res);
-		//}
+		[HttpGet(nameof(FetchCategories))]
+		public IActionResult FetchCategories()
+		{
+			var res = _ProductService.GetProductTypes();
+			return Ok(new ControllerResponse(res.Code, res.Message, res.Data));
+		}
 
-		//[EnableCors(CorsPolicy.AllowChimeWebapp)]
-		//[Authorize(Roles = "User")]
-		//[HttpPost(nameof(UploadProduct))]
-		//public async Task<IActionResult> UploadProduct(ProductDto dto)
-		//{
-		//	bool res = await _ProductService.UploadProduct(dto);
-		//	if (res == false) BadRequest("Failed to upload product");
-		//	return Ok();
-		//}
+		[EnableCors(CorsPolicy.AllowChimeWebapp)]
+		[Authorize(Roles = "User")]
+		[HttpPost(nameof(UploadProduct))]
+		public async Task<IActionResult> UploadProduct(ProductUploadDto dto)
+		{
+			var res = await _ProductService.UploadProduct(dto);
+			if (res.Code != ResponseCode.Success)
+			{
+				BadRequest(new ControllerResponse(res.Code, res.Message));
+			}
+			return Ok(new ControllerResponse(res.Code, res.Message));
+		}
 
 		//[EnableCors(CorsPolicy.AllowChimeWebapp)]
 		//[Authorize(Roles = "User")]

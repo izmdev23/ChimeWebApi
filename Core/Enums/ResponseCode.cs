@@ -5,9 +5,5 @@
 		None,
 		Success,
 		Failed,
-
-		// product service
-		ProductDataUploadFailed,
-		ProductImageUploadFailed,
 	}
 }
