@@ -4,16 +4,19 @@ using ChimeWebApi.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ChimeWebApi.Migrations
+namespace ChimeWebApi.Migrations.ProductDatabaseMigrations
 {
-    [DbContext(typeof(ChimeDatabase))]
-    partial class ChimeDatabaseModelSnapshot : ModelSnapshot
+    [DbContext(typeof(ProductDatabase))]
+    [Migration("20250928092436_AddProductDb")]
+    partial class AddProductDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,58 +25,10 @@ namespace ChimeWebApi.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("ChimeWebApi.Entities.AppUser", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("MiddleName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("RefreshToken")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("RefreshTokenExpireDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserName")
-                        .IsUnique();
-
-                    b.ToTable("AppUsers");
-                });
-
             modelBuilder.Entity("ChimeWebApi.Entities.Product", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("AppUserId")
                         .HasColumnType("char(36)");
 
                     b.Property<string>("Description")
@@ -90,12 +45,19 @@ namespace ChimeWebApi.Migrations
                     b.Property<int>("ProductTypeId")
                         .HasColumnType("int");
 
+                    b.Property<float>("Rating")
+                        .HasColumnType("float");
+
                     b.Property<decimal>("SalePrice")
                         .HasColumnType("decimal(65,30)");
 
-                    b.HasKey("Id");
+                    b.Property<Guid>("StoreId")
+                        .HasColumnType("char(36)");
 
-                    b.HasIndex("AppUserId");
+                    b.Property<Guid>("UploaderId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("ProductTypeId");
 
@@ -121,26 +83,13 @@ namespace ChimeWebApi.Migrations
 
             modelBuilder.Entity("ChimeWebApi.Entities.Product", b =>
                 {
-                    b.HasOne("ChimeWebApi.Entities.AppUser", "AppUser")
-                        .WithMany("Products")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ChimeWebApi.Entities.ProductType", "ProductType")
                         .WithMany("Products")
                         .HasForeignKey("ProductTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AppUser");
-
                     b.Navigation("ProductType");
-                });
-
-            modelBuilder.Entity("ChimeWebApi.Entities.AppUser", b =>
-                {
-                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("ChimeWebApi.Entities.ProductType", b =>

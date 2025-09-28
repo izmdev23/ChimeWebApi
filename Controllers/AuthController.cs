@@ -13,7 +13,7 @@ namespace ChimeWebApi.Controllers
 	[ApiController]
 	public class AuthController(AuthService _AuthService) : ControllerBase
 	{
-		private static AppUser user = new();
+		private static User user = new();
 
 		[HttpPost(nameof(Register))]
 		public async Task<IActionResult> Register(SignUpDto dto)
