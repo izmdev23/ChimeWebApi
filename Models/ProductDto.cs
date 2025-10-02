@@ -15,5 +15,6 @@ namespace ChimeWebApi.Models
 		public DateTime SaleStart { get; set; }
 		public DateTime SaleEnd { get; set; }
 		public int CategoryId { get; set; }
+		public int Stock { get; set; }
 	}
 }

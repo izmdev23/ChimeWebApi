@@ -97,7 +97,8 @@ namespace ChimeWebApi.Core.Services
 						Rating = e.Rating,
 						SaleStart = e.SaleStart,
 						SaleEnd = e.SaleEnd,
-						CategoryId = e.CategoryId
+						CategoryId = e.CategoryId,
+						Stock = e.Stock
 					})
 					.Skip(start)
 					.Take(count)

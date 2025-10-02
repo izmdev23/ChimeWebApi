@@ -4,6 +4,7 @@ using ChimeWebApi.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChimeWebApi.Migrations.ProductDatabaseMigrations
 {
     [DbContext(typeof(ProductDatabase))]
-    partial class ProductDatabaseModelSnapshot : ModelSnapshot
+    [Migration("20251002162505_AddStocksInProducts")]
+    partial class AddStocksInProducts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

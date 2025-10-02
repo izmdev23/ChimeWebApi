@@ -14,6 +14,7 @@ namespace ChimeWebApi.Entities
 		public float Rating { get; set; }
 		public DateTime SaleStart { get; set; }
 		public DateTime SaleEnd { get; set; }
+		public int Stock { get; set; }
 
 		public int CategoryId { get; set; }
 

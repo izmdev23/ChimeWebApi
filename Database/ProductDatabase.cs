@@ -26,7 +26,8 @@ namespace ChimeWebApi.Database
 					SalePrice = 200,
 					Rating = 0,
 					StoreId = Guid.Empty,
-					UploaderId = Guid.Parse("08ddfe7f-1ec6-47ee-8b74-ef4846c95c55")
+					UploaderId = Guid.Parse("08ddfe7f-1ec6-47ee-8b74-ef4846c95c55"),
+					Stock = 99
 				},
 				new Product()
 				{
@@ -38,7 +39,8 @@ namespace ChimeWebApi.Database
 					SalePrice = 138,
 					Rating = 0,
 					StoreId = Guid.Empty,
-					UploaderId = Guid.Parse("08ddfe7f-1ec6-47ee-8b74-ef4846c95c55")
+					UploaderId = Guid.Parse("08ddfe7f-1ec6-47ee-8b74-ef4846c95c55"),
+					Stock = 99
 				},
 				new Product()
 				{
@@ -50,7 +52,8 @@ namespace ChimeWebApi.Database
 					SalePrice = 229,
 					Rating = 0,
 					StoreId = Guid.Empty,
-					UploaderId = Guid.Parse("08ddfe7c-b9ae-4602-871b-a2e50fcf48a2")
+					UploaderId = Guid.Parse("08ddfe7c-b9ae-4602-871b-a2e50fcf48a2"),
+					Stock = 99
 				},
 				new Product()
 				{
@@ -62,7 +65,8 @@ namespace ChimeWebApi.Database
 					SalePrice = 195,
 					Rating = 0,
 					StoreId = Guid.Empty,
-					UploaderId = Guid.Parse("08ddfe7c-b9ae-4602-871b-a2e50fcf48a2")
+					UploaderId = Guid.Parse("08ddfe7c-b9ae-4602-871b-a2e50fcf48a2"),
+					Stock = 99
 				},
 				new Product()
 				{
@@ -74,7 +78,8 @@ namespace ChimeWebApi.Database
 					SalePrice = 2379,
 					Rating = 0,
 					StoreId = Guid.Empty,
-					UploaderId = Guid.Parse("08ddfe7c-b9ae-4602-871b-a2e50fcf48a2")
+					UploaderId = Guid.Parse("08ddfe7c-b9ae-4602-871b-a2e50fcf48a2"),
+					Stock = 99
 				});
 
 
