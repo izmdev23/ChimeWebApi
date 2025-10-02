@@ -31,14 +31,25 @@ namespace ChimeWebApi
 				});
 			});
 
-			string connectionString = builder.Configuration.GetConnectionString("MainDb")!;
-			builder.Services.AddDbContext<ChimeDatabase>(options =>
+			string identityDbStr = builder.Configuration.GetConnectionString("IdentityDb")!;
+			string fileDbStr = builder.Configuration.GetConnectionString("FileDb")!;
+			string productDbStr = builder.Configuration.GetConnectionString("ProductDb")!;
+			builder.Services.AddDbContext<IdentityDatabase>(options =>
 			{
-				options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+				options.UseMySql(identityDbStr, ServerVersion.AutoDetect(identityDbStr));
+			});
+			builder.Services.AddDbContext<ProductDatabase>(options =>
+			{
+				options.UseMySql(productDbStr, ServerVersion.AutoDetect(productDbStr));
+			});
+			builder.Services.AddDbContext<FileDatabase>(options =>
+			{
+				options.UseMySql(fileDbStr, ServerVersion.AutoDetect(fileDbStr));
 			});
 
 			builder.Services.AddScoped<AuthService>();
 			builder.Services.AddScoped<ProductService>();
+			builder.Services.AddScoped<FileService>();
 
 			builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 				.AddJwtBearer(options =>
@@ -70,12 +81,15 @@ namespace ChimeWebApi
 
             var app = builder.Build();
 
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
 				app.MapScalarApiReference();
             }
+
+			app.UseStaticFiles();
 
             app.UseHttpsRedirection();
 

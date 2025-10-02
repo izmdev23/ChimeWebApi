@@ -2,7 +2,7 @@
 
 namespace ChimeWebApi.Entities
 {
-	public class AppUser
+	public class User
 	{
 		public Guid Id { get; set; }
 		public string FirstName { get; set; } = string.Empty;
@@ -13,7 +13,5 @@ namespace ChimeWebApi.Entities
 		public string Role { get; set; } = string.Empty;
 		public string RefreshToken { get; set; } = string.Empty;
 		public DateTime RefreshTokenExpireDate { get; set; } = DateTime.UtcNow;
-
-		public ICollection<Product> Products { get; set; } = [];
 	}
 }

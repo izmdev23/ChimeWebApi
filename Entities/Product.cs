@@ -5,14 +5,19 @@ namespace ChimeWebApi.Entities
 	public class Product
 	{
 		public Guid Id { get; set; }
+		public Guid StoreId { get; set; }
+		public Guid UploaderId { get; set; }
 		public string Name { get; set; } = string.Empty;
 		public string Description { get; set; } = string.Empty;
 		public decimal Price { get; set; }
 		public decimal SalePrice { get; set; }
-		public int ProductTypeId { get; set; }
-		public Guid AppUserId { get; set; }
+		public float Rating { get; set; }
+		public DateTime SaleStart { get; set; }
+		public DateTime SaleEnd { get; set; }
+		public int Stock { get; set; }
 
-		public ProductType ProductType { get; set; } = null!;
-		public AppUser AppUser { get; set; } = null!;
+		public int CategoryId { get; set; }
+
+		public ProductType Category { get; set; } = null!;
 	}
 }

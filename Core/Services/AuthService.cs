@@ -14,7 +14,7 @@ using System.Text;
 
 namespace ChimeWebApi.Core.Services
 {
-	public class AuthService(ChimeDatabase _Db, IConfiguration _Configuration) : IAuthService
+	public class AuthService(IdentityDatabase _Db, IConfiguration _Configuration)
 	{
 		JsonWebTokenHandler jwtHandler = new();
 
@@ -25,48 +25,66 @@ namespace ChimeWebApi.Core.Services
 			return jwtHandler.ReadJsonWebToken(finalAuthString);
 		}
 
-		public async Task<AuthResponseDto?> Login(LoginDto dto)
+		public async Task<Response<AuthResponseDto>> Login(LoginDto dto)
 		{
-			AppUser? user = await _Db.AppUsers.FirstOrDefaultAsync(e => e.UserName == dto.UserName);
-			if (user == null)
+			User? user = await _Db.Users.FirstOrDefaultAsync(e => e.UserName == dto.UserName);
+			if (user == null) return new Response<AuthResponseDto>
 			{
-				return null;
-			}
+				Code = ResponseCode.Failed,
+				Message = $"Incorrect login credentials",
+				Source = nameof(AuthService)
+			};
 
-			if (new PasswordHasher<AppUser>().VerifyHashedPassword(user, user.PasswordHash, dto.Password)
-				== PasswordVerificationResult.Failed)
-			{
-				return null;
-			}
+			if (new PasswordHasher<User>().VerifyHashedPassword(user, user.PasswordHash, dto.Password)
+				== PasswordVerificationResult.Failed) return new Response<AuthResponseDto>
+				{
+					Code = ResponseCode.Failed,
+					Message = $"Incorrect login credentials",
+					Source = nameof(AuthService)
+				};
 
-			var token = new AuthResponseDto()
+			var result = new AuthResponseDto()
 			{
 				UserId = user.Id,
 				AccessToken = CreateToken(user),
 				RefreshToken = CreateRefreshToken(),
 			};
-			return token;
+
+			return new Response<AuthResponseDto>
+			{
+				Code = ResponseCode.Success,
+				Message = $"User authenticated",
+				Source = nameof(AuthService),
+				Data = result
+			};
 		}
 
-		public async Task<AppUser?> Register(SignUpDto dto)
+		public async Task<Response<User>> Register(SignUpDto dto)
 		{
-			int accountExists = await _Db.AppUsers.Where(e => e.UserName == dto.UserName).CountAsync();
-			if (accountExists > 0)
+			int accountExists = await _Db.Users.Where(e => e.UserName == dto.UserName).CountAsync();
+			if (accountExists > 0) return new Response<User>
 			{
-				return null;
-			}
+				Code = ResponseCode.Failed,
+				Message = $"Username {dto.UserName} is already taken",
+				Source = nameof(AuthService)
+			};
 
-			AppUser user = new();
-			var passwordHash = new PasswordHasher<AppUser>().HashPassword(user, dto.Password);
+			User user = new();
+			var passwordHash = new PasswordHasher<User>().HashPassword(user, dto.Password);
 
 			user.UserName = dto.UserName;
 			user.PasswordHash = passwordHash;
 			user.Role = AppRole.User;
 
-			await _Db.AppUsers.AddAsync(user);
+			await _Db.Users.AddAsync(user);
 			await _Db.SaveChangesAsync();
 
-			return user;
+			return new Response<User>
+			{
+				Code = ResponseCode.Success,
+				Message = $"Account is created",
+				Source = nameof(AuthService),
+			};
 		}
 
 		public async Task<AuthResponseDto?> RenewRefreshToken(string authString)
@@ -92,7 +110,7 @@ namespace ChimeWebApi.Core.Services
 			Guid parsedUserId;
 			if (Guid.TryParse(userId, out parsedUserId) == false) return null;
 
-			var user = await _Db.AppUsers.FindAsync(parsedUserId);
+			var user = await _Db.Users.FindAsync(parsedUserId);
 
 			if (user == null) return null;
 			if (user.UserName != userName) return null;
@@ -110,7 +128,7 @@ namespace ChimeWebApi.Core.Services
 		}
 
 
-		public string CreateToken(AppUser user)
+		public string CreateToken(User user)
 		{
 			var claims = new Dictionary<string, object>
 			{
@@ -142,7 +160,7 @@ namespace ChimeWebApi.Core.Services
 			return Convert.ToBase64String(tokenBytes);
 		}
 
-		public async Task<AppUser?> GetAppUserInfo(string authString)
+		public async Task<User?> GetAppUserInfo(string authString)
 		{
 			var token = ReadAuthString(authString);
 			if (token == null) return null;
@@ -150,7 +168,7 @@ namespace ChimeWebApi.Core.Services
 			if (appUserId == null) return null;
 			Guid userId;
 			if (Guid.TryParse(appUserId.Value, out userId) == false) return null;
-			var appUser = await _Db.AppUsers.FindAsync(userId);
+			var appUser = await _Db.Users.FindAsync(userId);
 			return appUser;
 		}
 	}

@@ -11,9 +11,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ChimeWebApi.Migrations
 {
-    [DbContext(typeof(ChimeDatabase))]
-    [Migration("20250926070931_AddRefreshToken")]
-    partial class AddRefreshToken
+    [DbContext(typeof(IdentityDatabase))]
+    [Migration("20250928120705_ConfigIdentity")]
+    partial class ConfigIdentity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,11 +25,23 @@ namespace ChimeWebApi.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("ChimeWebApi.Entities.AppUser", b =>
+            modelBuilder.Entity("ChimeWebApi.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("MiddleName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -55,7 +67,7 @@ namespace ChimeWebApi.Migrations
                     b.HasIndex("UserName")
                         .IsUnique();
 
-                    b.ToTable("AppUsers");
+                    b.ToTable("Users");
                 });
 #pragma warning restore 612, 618
         }
