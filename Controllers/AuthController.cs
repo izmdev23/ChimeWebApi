@@ -1,4 +1,5 @@
-﻿using ChimeWebApi.Core.Objects;
+﻿using ChimeWebApi.Core.Enums;
+using ChimeWebApi.Core.Objects;
 using ChimeWebApi.Core.Services;
 using ChimeWebApi.Entities;
 using ChimeWebApi.Models;
@@ -9,29 +10,33 @@ using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace ChimeWebApi.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api/auth")]
 	[ApiController]
 	public class AuthController(AuthService _AuthService) : ControllerBase
 	{
-		private static User user = new();
 
-		[HttpPost(nameof(Register))]
-		public async Task<IActionResult> Register(SignUpDto dto)
+		[HttpPost]
+		[Route("signup")]
+		public async Task<IActionResult> Signup(SignUpDto dto)
 		{
 			var user = await _AuthService.Register(dto);
-			if (user == null) return BadRequest("Failed to create account");
-			return Created(nameof(Register), user);
+			if (user.Code == ResponseCode.Failed)
+				return BadRequest(new ApiResponse(user.Code, user.Message, user.Data));
+			return Created(nameof(Signup), new ApiResponse(user.Code, user.Message, user.Data));
 		}
 
-		[HttpPost(nameof(Login))]
+		[HttpPost]
+		[Route("login")]
 		public async Task<IActionResult> Login(LoginDto dto)
 		{
-			var token = await _AuthService.Login(dto);
-			if (token == null) return Unauthorized("Incorrect login credentials");
-			return Ok(token);
+			var result = await _AuthService.Login(dto);
+			if (result.Code == ResponseCode.Failed)
+				return Unauthorized(new ApiResponse(result.Code, result.Message, result.Data));
+			return Ok(new ApiResponse(result.Code, result.Message, result.Data));
 		}
 
-		[HttpPost(nameof(RenewRefreshToken))]
+		[HttpPost]
+		[Route("renew-refrehs-token")]
 		public async Task<IActionResult> RenewRefreshToken()
 		{
 			var authString = Request.Headers.Authorization;
@@ -41,8 +46,9 @@ namespace ChimeWebApi.Controllers
 			return Ok(token);
 		}
 
-		[HttpGet(nameof(GetAppUserInfo))]
-		public async Task<IActionResult> GetAppUserInfo()
+		[HttpGet]
+		[Route("get-user")]
+		public async Task<IActionResult> GetUser()
 		{
 			var authString = Request.Headers.Authorization;
 			if (authString.Count == 0) return Unauthorized();

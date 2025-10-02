@@ -3,22 +3,22 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ChimeWebApi.Core.Objects
 {
-	public class ControllerResponse
+	public class ApiResponse
 	{
-		public ControllerResponse()
+		public ApiResponse()
 		{
 			Code = ResponseCode.None;
 			Message = string.Empty;
 		}
 
-		public ControllerResponse(ResponseCode code, string message, object? data = null)
+		public ApiResponse(ResponseCode code, string message, object? data = null)
 		{
 			Code = code;
 			Message = message;
 			Data = data;
 		}
 
-		public ControllerResponse(Response response)
+		public ApiResponse(Response response)
 		{
 			Code = response.Code;
 			Message = response.Message;

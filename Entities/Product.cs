@@ -11,9 +11,12 @@ namespace ChimeWebApi.Entities
 		public string Description { get; set; } = string.Empty;
 		public decimal Price { get; set; }
 		public decimal SalePrice { get; set; }
-		public int ProductTypeId { get; set; }
 		public float Rating { get; set; }
+		public DateTime SaleStart { get; set; }
+		public DateTime SaleEnd { get; set; }
 
-		public ProductType ProductType { get; set; } = null!;
+		public int CategoryId { get; set; }
+
+		public ProductType Category { get; set; } = null!;
 	}
 }

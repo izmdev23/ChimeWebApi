@@ -8,6 +8,6 @@
 		public int ProductTypeId { get; set; } = -1;
 		public Guid UploaderId { get; set; } = Guid.Empty;
 		public decimal SalePrice { get; set; } = -1;
-		public required ICollection<IFormFile> Images;
+		public required IFormFile[] Images;
 	}
 }

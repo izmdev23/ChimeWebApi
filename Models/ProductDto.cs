@@ -5,12 +5,15 @@ namespace ChimeWebApi.Models
 	public class ProductDto
 	{
 		public Guid Id { get; set; }
+		public Guid StoreId { get; set; }
+		public Guid UploaderId { get; set; }
 		public string Name { get; set; } = string.Empty;
 		public string Description { get; set; } = string.Empty;
-		public decimal Price { get; set; } = -1;
-		public int ProductTypeId { get; set; } = -1;
-		public Guid AppUserId { get; set; } = Guid.Empty;
-		public decimal SalePrice { get; set; } = -1;
-		public string ProductCategoryName { get; set; } = string.Empty;
+		public decimal Price { get; set; }
+		public decimal SalePrice { get; set; }
+		public float Rating { get; set; }
+		public DateTime SaleStart { get; set; }
+		public DateTime SaleEnd { get; set; }
+		public int CategoryId { get; set; }
 	}
 }

@@ -4,12 +4,11 @@ using ChimeWebApi.Core.Services;
 using ChimeWebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChimeWebApi.Controllers
 {
-	[Route("api/[controller]")]
+	[Route($"api/product")]
 	[ApiController]
 	public class ProductController(ProductService _ProductService, FileService _FileService) : ControllerBase
 	{
@@ -38,25 +37,45 @@ namespace ChimeWebApi.Controllers
 		//	return Ok(products);
 		//}
 
-		[HttpGet(nameof(FetchCategories))]
+		[HttpGet]
+		[Route("{userId},{catId},{start},{end}")]
+		public async Task<IActionResult> FetchProducts(Guid? userId, int catId, int start, int end)
+		{
+			var res = await _ProductService.GetProducts(userId, catId, start, end);
+			return Ok(new ApiResponse(res.Code, res.Message, res.Data));
+		}
+
+		[HttpGet]
+		[Route("{prodId}")]
+		public async Task<IActionResult> FetchProduct(Guid prodId)
+		{
+			var res = await _ProductService.GetProduct(prodId);
+			return Ok(new ApiResponse(res.Code, res.Message, res.Data));
+		}
+
+		[HttpGet]
+		[Route("categories")]
 		public IActionResult FetchCategories()
 		{
 			var res = _ProductService.GetProductTypes();
-			return Ok(new ControllerResponse(res.Code, res.Message, res.Data));
+			return Ok(new ApiResponse(res.Code, res.Message, res.Data));
 		}
 
-		[EnableCors(CorsPolicy.AllowChimeWebapp)]
+		[HttpPost]
+		[Route("upload")]
 		[Authorize(Roles = "User")]
-		[HttpPost(nameof(UploadProduct))]
+		[EnableCors(CorsPolicy.AllowChimeWebapp)]
 		public async Task<IActionResult> UploadProduct(ProductUploadDto dto)
 		{
 			var res = await _ProductService.UploadProduct(dto);
 			if (res.Code != ResponseCode.Success)
 			{
-				BadRequest(new ControllerResponse(res.Code, res.Message));
+				BadRequest(new ApiResponse(res.Code, res.Message));
 			}
-			return Ok(new ControllerResponse(res.Code, res.Message));
+			return Ok(new ApiResponse(res.Code, res.Message));
 		}
+
+		
 
 		//[EnableCors(CorsPolicy.AllowChimeWebapp)]
 		//[Authorize(Roles = "User")]
