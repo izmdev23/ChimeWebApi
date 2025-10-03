@@ -75,6 +75,9 @@ namespace ChimeWebApi.Core.Services
 			user.UserName = dto.UserName;
 			user.PasswordHash = passwordHash;
 			user.Role = AppRole.User;
+			user.FirstName = dto.FirstName;
+			user.MiddleName = dto.MiddleName;
+			user.LastName = dto.LastName;
 
 			await _Db.Users.AddAsync(user);
 			await _Db.SaveChangesAsync();
