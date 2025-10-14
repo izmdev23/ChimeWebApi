@@ -10,46 +10,64 @@ namespace ChimeWebApi.Controllers
 {
 	[Route($"api/product")]
 	[ApiController]
-	public class ProductController(ProductService _ProductService, FileService _FileService) : ControllerBase
+	public class ProductController(ProductService ProductService, FileService _FileService) : ControllerBase
 	{
-		//[HttpGet("{id}")]
-		//public async Task<IActionResult> GetProduct(Guid id)
-		//{
-		//	var res = await _ProductService.GetProduct(id);
-		//	if (res == null) return BadRequest();
-		//	return Ok(new ProductDto()
-		//	{
-		//		AppUserId = res.AppUserId,
-		//		Description = res.Description,
-		//		Id = res.Id,
-		//		Name = res.Name,
-		//		Price = res.Price,
-		//		ProductTypeId = res.ProductTypeId,
-		//		SalePrice = res.SalePrice,
-		//		ProductCategoryName = (await _ProductService.GetCategoryName(res.ProductTypeId)) ?? "Uncategorized"
-		//	});
-		//}
+		[HttpPost]
+		[Route("upload/image")]
+		[Authorize(Roles = $"{AppRole.StoreManager},{AppRole.User}")]
+		public async Task<IActionResult> UploadProductImage([FromForm] ImageVariantDto dto)
+		{
+			var res = await _FileService.AddProductVariantImage(dto);
+			if (res.Code != ResponseCode.Success)
+			{
+				return BadRequest(new ApiResponse
+				{
+					Code = res.Code,
+					Message = "Failed to upload image because " + res.Message
+				});
+			}
+			return Ok(new ApiResponse
+			{
+				Code = res.Code,
+				Message = res.Message,
+				Data = res.Data
+			});
+		}
 
-		//[HttpPost(nameof(GetProducts))]
-		//public async Task<IActionResult> GetProducts(RetrieveListDto dto)
-		//{
-		//	var products = await _ProductService.GetProducts(dto);
-		//	return Ok(products);
-		//}
+		[HttpGet]
+		[Route("{productId},{variantId}/image")]
+		public async Task<IActionResult> GetProductVariantsImageUrls(Guid productId, Guid variantId)
+		{
+			var result = await ProductService.GetVariantImages(productId, variantId);
+			if (result.Code == ResponseCode.Failed)
+			{
+				return BadRequest(new ApiResponse(result.Code, result.Message));
+			}
+
+			return Ok(new ApiResponse(result.Code, result.Message, result.Data));
+		}
 
 		[HttpGet]
 		[Route("{userId},{catId},{start},{end}")]
 		public async Task<IActionResult> FetchProducts(Guid? userId, int catId, int start, int end)
 		{
-			var res = await _ProductService.GetProducts(userId, catId, start, end);
+			var res = await ProductService.GetProducts(userId, catId, start, end);
 			return Ok(new ApiResponse(res.Code, res.Message, res.Data));
 		}
 
 		[HttpGet]
 		[Route("{prodId}")]
-		public async Task<IActionResult> FetchProduct(Guid prodId)
+		public async Task<IActionResult> GetProduct(Guid prodId)
 		{
-			var res = await _ProductService.GetProduct(prodId);
+			var res = await ProductService.GetProduct(prodId);
+			return Ok(new ApiResponse(res.Code, res.Message, res.Data));
+		}
+
+		[HttpGet]
+		[Route("{prodId}/variants")]
+		public async Task<IActionResult> GetVariants(Guid prodId)
+		{
+			var res = await ProductService.GetVariants(prodId);
 			return Ok(new ApiResponse(res.Code, res.Message, res.Data));
 		}
 
@@ -57,7 +75,7 @@ namespace ChimeWebApi.Controllers
 		[Route("categories")]
 		public IActionResult FetchCategories()
 		{
-			var res = _ProductService.GetProductTypes();
+			var res = ProductService.GetCategories();
 			return Ok(new ApiResponse(res.Code, res.Message, res.Data));
 		}
 
@@ -67,7 +85,35 @@ namespace ChimeWebApi.Controllers
 		[EnableCors(CorsPolicy.AllowChimeWebapp)]
 		public async Task<IActionResult> UploadProduct(ProductUploadDto dto)
 		{
-			var res = await _ProductService.UploadProduct(dto);
+			var res = await ProductService.AddProduct(dto);
+			if (res.Code != ResponseCode.Success)
+			{
+				BadRequest(new ApiResponse(res.Code, res.Message));
+			}
+			return Ok(new ApiResponse(res.Code, res.Message, res.Data));
+		}
+
+		[HttpPost]
+		[Route("add-prod-variant")]
+		[Authorize(Roles = "User")]
+		[EnableCors(CorsPolicy.AllowChimeWebapp)]
+		public async Task<IActionResult> AddProductVariant(ProductVariantDto dto)
+		{
+			var res = await ProductService.AddVariant(dto);
+			if (res.Code != ResponseCode.Success)
+			{
+				BadRequest(new ApiResponse(res.Code, res.Message));
+			}
+			return Ok(new ApiResponse(res.Code, res.Message, res.Data));
+		}
+
+		[HttpPost]
+		[Route("caritems/add")]
+		[Authorize(Roles = "User")]
+		[EnableCors(CorsPolicy.AllowChimeWebapp)]
+		public async Task<IActionResult> AddCartItem(AddCartItemDto dto)
+		{
+			var res = await ProductService.AddCartItem(dto.ProductId, dto.VariantId, dto.UserId, dto.Quantity);
 			if (res.Code != ResponseCode.Success)
 			{
 				BadRequest(new ApiResponse(res.Code, res.Message));
@@ -75,22 +121,19 @@ namespace ChimeWebApi.Controllers
 			return Ok(new ApiResponse(res.Code, res.Message));
 		}
 
-		
-
-		//[EnableCors(CorsPolicy.AllowChimeWebapp)]
+		[HttpGet]
+		[Route("cartitems/{userId}")]
 		//[Authorize(Roles = "User")]
-		//[HttpPost(nameof(UploadFile))]
-		//public async Task<IActionResult> UploadFile(ProductUploadDto file)
-		//{
-		//	foreach(IFormFile img in file.Images)
-		//	{
-		//		var fileName = await _ProductService.UploadProduct(file);
+		//[EnableCors(CorsPolicy.AllowChimeWebapp)]
+		public async Task<IActionResult> GetCartItems(Guid userId)
+		{
+			var res = await ProductService.GetCartItems(userId);
+			if (res.Code != ResponseCode.Success)
+			{
+				BadRequest(new ApiResponse(res.Code, res.Message));
+			}
+			return Ok(new ApiResponse(res.Code, res.Message, res.Data));
+		}
 
-		//	}
-
-		//	//bool res = await _ProductService.(dto);
-		//	//if (res == false) BadRequest("Failed to upload product");
-		//	return Ok();
-		//}
 	}
 }

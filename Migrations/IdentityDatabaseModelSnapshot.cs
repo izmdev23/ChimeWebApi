@@ -65,6 +65,32 @@ namespace ChimeWebApi.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("062ea2e0-c625-4d3b-8863-b5bed87244cd"),
+                            FirstName = "Anton Jay",
+                            LastName = "Cañete",
+                            MiddleName = "Adlit",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMCAqFd1gUqBRssags1TTRQ82pY9RdgqkwFXMMveYGDymbbWjUBA5RoRZZKBQfm1tw==",
+                            RefreshToken = "",
+                            RefreshTokenExpireDate = new DateTime(2025, 10, 12, 4, 57, 50, 0, DateTimeKind.Unspecified),
+                            Role = "User",
+                            UserName = "antonjay23"
+                        },
+                        new
+                        {
+                            Id = new Guid("6fda04f9-18a4-475f-80c4-3863e691cc7b"),
+                            FirstName = "Angel",
+                            LastName = "Pacaña",
+                            MiddleName = "Caballes",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDOJTHYMo3ZEGpRlyY/ygV8n2gv1zd0sALftHy+bnM9pZe5cdXOwZtijzcLZRZpw8Q==",
+                            RefreshToken = "",
+                            RefreshTokenExpireDate = new DateTime(2025, 10, 12, 4, 57, 50, 0, DateTimeKind.Unspecified),
+                            Role = "User",
+                            UserName = "angel26"
+                        });
                 });
 #pragma warning restore 612, 618
         }

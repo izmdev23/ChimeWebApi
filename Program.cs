@@ -24,10 +24,16 @@ namespace ChimeWebApi
 			{
 				options.AddPolicy(name: CorsPolicy.AllowChimeWebapp, policy =>
 				{
-					// allow angular webapp to access api
-					policy.WithOrigins("http://localhost:4200")
+					// for development only
+					// this will allow all origins to access the api
+					policy.AllowAnyOrigin()
 					.AllowAnyHeader()
 					.AllowAnyMethod();
+
+					// allow angular webapp to access api
+					//policy.WithOrigins("http://localhost:4200")
+					//.AllowAnyHeader()
+					//.AllowAnyMethod();
 				});
 			});
 
