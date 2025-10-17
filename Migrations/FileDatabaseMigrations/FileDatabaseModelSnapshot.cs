@@ -22,6 +22,27 @@ namespace ChimeWebApi.Migrations.FileDatabaseMigrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
+            modelBuilder.Entity("ChimeWebApi.Entities.FileData", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("Owner")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("OwnerId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FileData");
+                });
+
             modelBuilder.Entity("ChimeWebApi.Entities.ProductImage", b =>
                 {
                     b.Property<Guid>("Id")
@@ -35,9 +56,12 @@ namespace ChimeWebApi.Migrations.FileDatabaseMigrations
                     b.Property<Guid>("ProductId")
                         .HasColumnType("char(36)");
 
+                    b.Property<Guid>("VariantId")
+                        .HasColumnType("char(36)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Images");
+                    b.ToTable("ProductImages");
                 });
 #pragma warning restore 612, 618
         }

@@ -22,7 +22,8 @@ namespace ChimeWebApi.Database
 					LastName = "Cañete",
 					PasswordHash = "AQAAAAIAAYagAAAAEMCAqFd1gUqBRssags1TTRQ82pY9RdgqkwFXMMveYGDymbbWjUBA5RoRZZKBQfm1tw==",
 					Role = "User",
-					UserName = "antonjay23"
+					UserName = "antonjay23",
+					RefreshTokenExpireDate = DateTime.Parse("2025-10-12 04:57:50.000000"),
 				},
 				new User
 				{
@@ -32,7 +33,8 @@ namespace ChimeWebApi.Database
 					LastName = "Pacaña",
 					PasswordHash = "AQAAAAIAAYagAAAAEDOJTHYMo3ZEGpRlyY/ygV8n2gv1zd0sALftHy+bnM9pZe5cdXOwZtijzcLZRZpw8Q==",
 					Role = "User",
-					UserName = "angel26"
+					UserName = "angel26",
+					RefreshTokenExpireDate = DateTime.Parse("2025-10-12 04:57:50.000000"),
 				});
 
 			base.OnModelCreating(modelBuilder);

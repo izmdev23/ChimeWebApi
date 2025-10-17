@@ -2,7 +2,7 @@
 using ChimeWebApi.Core.Objects;
 using ChimeWebApi.Core.Services;
 using ChimeWebApi.Entities;
-using ChimeWebApi.Models;
+using ChimeWebApi.Models.Request;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +14,12 @@ namespace ChimeWebApi.Controllers
 	[ApiController]
 	public class AuthController(AuthService _AuthService) : ControllerBase
 	{
+		[HttpGet]
+		[Route("ping")]
+		public IActionResult Ping()
+		{
+			return Ok();
+		}
 
 		[HttpPost]
 		[Route("signup")]
@@ -52,14 +58,23 @@ namespace ChimeWebApi.Controllers
 		{
 			var authString = Request.Headers.Authorization;
 			if (authString.Count == 0) return Unauthorized();
-			var appData = await _AuthService.GetAppUserInfo(authString!);
-			if (appData == null) return Unauthorized("Failed to fetch user info");
-			AccountDto dto = new()
+			var response = await _AuthService.GetAppUserInfo(authString!);
+			if (response == null) return Unauthorized("Failed to fetch user info");
+			if (response.Data == null) return Unauthorized("Failed to fetch user info");
+			ApiResponse res = new ApiResponse
 			{
-				Role = appData.Role,
-				UserName = appData.UserName
+				Code = response.Code,
+				Message = response.Message,
+				Data = new AccountDto
+				{
+					UserName = response.Data!.UserName,
+					Role = response.Data!.Role,
+					FirstName = response.Data!.FirstName,
+					MiddleName = response.Data!.MiddleName,
+					LastName = response.Data!.LastName,
+				}
 			};
-			return Ok(dto);
+			return Ok(res);
 		}
 
 
