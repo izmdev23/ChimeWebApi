@@ -2,7 +2,7 @@
 using ChimeWebApi.Core.Objects;
 using ChimeWebApi.Database;
 using ChimeWebApi.Entities;
-using ChimeWebApi.Models;
+using ChimeWebApi.Models.Request;
 using ChimeWebApi.Models.Response;
 using Microsoft.EntityFrameworkCore;
 
@@ -65,7 +65,7 @@ namespace ChimeWebApi.Core.Services
 			};
 		}
 
-		public async Task<Response<Guid?>> AddVariant(ProductVariantDto dto)
+		public async Task<Response<ProductVariantResponseDto?>> AddVariant(ProductVariantDto dto)
 		{
 			bool failed = false;
 			//if ((await AddDefaultVariant(dto.ProductId)).Code == ResponseCode.Failed) failed = true;
@@ -91,7 +91,18 @@ namespace ChimeWebApi.Core.Services
 				Code = ResponseCode.Success,
 				Message = "Variants are created",
 				Source = nameof(ProductService),
-				Data = addResult.Data.Id
+				Data = new()
+				{
+					Id = addResult.Data.Id,
+					Rating = addResult.Data.Rating,
+					Name = addResult.Data.Name,
+					Price = addResult.Data.Price,
+					ProductId = addResult.Data.ProductId,
+					SaleEnd = addResult.Data.SaleEnd,
+					SalePrice = addResult.Data.SalePrice,
+					SaleStart = addResult.Data.SaleStart,
+					Stock = addResult.Data.Stock,
+				}
 			};
 		}
 
@@ -371,6 +382,46 @@ namespace ChimeWebApi.Core.Services
 				Data = [..responses]
 			};
 		}
+
+		public bool ContainsCartItem(Guid id)
+		{
+			return (ProductDb.CartItems.FirstOrDefault(e => e.Id == id)) != null;
+		}
+
+		/// <summary>
+		/// Updates the quantity using the given id of <see cref="CartItem"/>
+		/// </summary>
+		/// <param name="cartItemId">The id of the cart item to be updated</param>
+		/// <param name="newQuantity">The new quantity value</param>
+		/// <returns>
+		/// <see cref="true"/> if it succeeds or <see cref="false"/> if update failed
+		/// </returns>
+		public async Task<bool> UpdateCartItemQuantityAsync(Guid cartItemId, int newQuantity)
+		{
+			CartItem? cartItem = await ProductDb.CartItems.FirstOrDefaultAsync(e => e.Id == cartItemId);
+			if (cartItem == null) return false;
+			cartItem.Quantity = newQuantity;
+			await ProductDb.SaveChangesAsync();
+			return true;
+		}
+
+		/// <summary>
+		/// Deletes a <see cref="CartItem"/>
+		/// </summary>
+		/// <param name="cartItemId">The id of the cart item to be updated</param>
+		/// <returns>
+		/// <see cref="true"/> if it succeeds or <see cref="false"/> if deletion failed
+		/// </returns>
+		public async Task<bool> DeleteCartItemAsync(Guid cartItemId)
+		{
+			CartItem? cartItem = await ProductDb.CartItems.FirstOrDefaultAsync(e => e.Id == cartItemId);
+			if (cartItem == null) return false;
+			ProductDb.CartItems.Remove(cartItem);
+			await ProductDb.SaveChangesAsync();
+			return true;
+		}
+
+
 
 
 	}

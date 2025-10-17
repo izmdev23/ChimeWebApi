@@ -1,7 +1,8 @@
 ﻿using ChimeWebApi.Core.Enums;
 using ChimeWebApi.Core.Objects;
 using ChimeWebApi.Core.Services;
-using ChimeWebApi.Models;
+using ChimeWebApi.Models.Request;
+using ChimeWebApi.Models.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -88,7 +89,7 @@ namespace ChimeWebApi.Controllers
 			var res = await ProductService.AddProduct(dto);
 			if (res.Code != ResponseCode.Success)
 			{
-				BadRequest(new ApiResponse(res.Code, res.Message));
+				return BadRequest(new ApiResponse(res.Code, res.Message));
 			}
 			return Ok(new ApiResponse(res.Code, res.Message, res.Data));
 		}
@@ -100,9 +101,21 @@ namespace ChimeWebApi.Controllers
 		public async Task<IActionResult> AddProductVariant(ProductVariantDto dto)
 		{
 			var res = await ProductService.AddVariant(dto);
+			if (res.Data == null) return BadRequest(new ApiResponse(res.Code, res.Message));
+			if (res.Code != ResponseCode.Success) return BadRequest(new ApiResponse(res.Code, res.Message));
+			return Ok(new ApiResponse(res.Code, res.Message, res.Data));
+		}
+
+		[HttpGet]
+		[Route("cartitems/{userId}")]
+		//[Authorize(Roles = "User")]
+		//[EnableCors(CorsPolicy.AllowChimeWebapp)]
+		public async Task<IActionResult> GetCartItems(Guid userId)
+		{
+			var res = await ProductService.GetCartItems(userId);
 			if (res.Code != ResponseCode.Success)
 			{
-				BadRequest(new ApiResponse(res.Code, res.Message));
+				return BadRequest(new ApiResponse(res.Code, res.Message));
 			}
 			return Ok(new ApiResponse(res.Code, res.Message, res.Data));
 		}
@@ -116,23 +129,63 @@ namespace ChimeWebApi.Controllers
 			var res = await ProductService.AddCartItem(dto.ProductId, dto.VariantId, dto.UserId, dto.Quantity);
 			if (res.Code != ResponseCode.Success)
 			{
-				BadRequest(new ApiResponse(res.Code, res.Message));
+				return BadRequest(new ApiResponse(res.Code, res.Message));
 			}
 			return Ok(new ApiResponse(res.Code, res.Message));
 		}
 
-		[HttpGet]
-		[Route("cartitems/{userId}")]
+		[HttpPut]
+		[Route("caritems/update-quantity")]
 		//[Authorize(Roles = "User")]
-		//[EnableCors(CorsPolicy.AllowChimeWebapp)]
-		public async Task<IActionResult> GetCartItems(Guid userId)
+		[EnableCors(CorsPolicy.AllowChimeWebapp)]
+		[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UpdateCartItemQuantityResponseDto))]
+		[ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(UpdateCartItemQuantityResponseDto))]
+		[ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(UpdateCartItemQuantityResponseDto))]
+		public async Task<ActionResult<UpdateCartItemQuantityResponseDto>> AddCartItem(UpdateCartItemQuantityRequestDto dto)
 		{
-			var res = await ProductService.GetCartItems(userId);
-			if (res.Code != ResponseCode.Success)
+			if (!ProductService.ContainsCartItem(dto.CartItemId)) return NotFound(new UpdateCartItemQuantityResponseDto
 			{
-				BadRequest(new ApiResponse(res.Code, res.Message));
-			}
-			return Ok(new ApiResponse(res.Code, res.Message, res.Data));
+				Code = 1,
+				Result = false,
+				Message = "Cart item does not exist"
+			});
+
+			var res = await ProductService.UpdateCartItemQuantityAsync(dto.CartItemId, dto.Quantity);
+			if (!res) return BadRequest(new UpdateCartItemQuantityResponseDto
+			{
+				Code = 1,
+				Result = false,
+				Message = "Failed to update cart item"
+			});
+
+			return new UpdateCartItemQuantityResponseDto { Result = true };
+		}
+
+		[HttpDelete]
+		[Route("caritems/{cartItemId}")]
+		//[Authorize(Roles = "User")]
+		[EnableCors(CorsPolicy.AllowChimeWebapp)]
+		[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DeleteCartItemResponseDto))]
+		[ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(DeleteCartItemResponseDto))]
+		[ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(DeleteCartItemResponseDto))]
+		public async Task<ActionResult<DeleteCartItemResponseDto>> DeleteCartItem(Guid cartItemId)
+		{
+			if (!ProductService.ContainsCartItem(cartItemId)) return NotFound(new DeleteCartItemResponseDto
+			{
+				Code = 1,
+				Result = false,
+				Message = "Cart item does not exist"
+			});
+
+			var res = await ProductService.DeleteCartItemAsync(cartItemId);
+			if (!res) return BadRequest(new DeleteCartItemResponseDto
+			{
+				Code = 1,
+				Result = false,
+				Message = "Failed to update cart item"
+			});
+
+			return new DeleteCartItemResponseDto { Result = true };
 		}
 
 	}

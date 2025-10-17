@@ -1,6 +1,6 @@
 ﻿using ChimeWebApi.Core.Enums;
 using ChimeWebApi.Core.Services;
-using ChimeWebApi.Models;
+using ChimeWebApi.Models.Request;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

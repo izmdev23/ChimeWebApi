@@ -1,7 +1,7 @@
 ﻿using ChimeWebApi.Core.Enums;
 using ChimeWebApi.Core.Objects;
 using ChimeWebApi.Core.Services;
-using ChimeWebApi.Models;
+using ChimeWebApi.Models.Request;
 using ChimeWebApi.Models.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

@@ -2,7 +2,7 @@
 using ChimeWebApi.Core.Objects;
 using ChimeWebApi.Database;
 using ChimeWebApi.Entities;
-using ChimeWebApi.Models;
+using ChimeWebApi.Models.Request;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChimeWebApi.Core.Services

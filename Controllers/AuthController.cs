@@ -2,7 +2,7 @@
 using ChimeWebApi.Core.Objects;
 using ChimeWebApi.Core.Services;
 using ChimeWebApi.Entities;
-using ChimeWebApi.Models;
+using ChimeWebApi.Models.Request;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

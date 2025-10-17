@@ -1,7 +1,7 @@
 ﻿using ChimeWebApi.Core.Enums;
 using ChimeWebApi.Core.Objects;
 using ChimeWebApi.Database;
-using ChimeWebApi.Models;
+using ChimeWebApi.Models.Request;
 
 namespace ChimeWebApi.Core.Services
 {
